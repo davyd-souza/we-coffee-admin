@@ -4,8 +4,8 @@ export const Route = createFileRoute('/_auth')({ component: AuthLayout })
 
 function AuthLayout() {
 	return (
-		<div className="min-h-screen md:grid grid-cols-2">
-			<section className="hidden h-full bg-muted p-10 text-muted-foreground md:flex flex-col justify-between">
+		<div className='min-h-screen grid-cols-3 md:grid'>
+			<section className='col-span-2 hidden h-full flex-col justify-between bg-muted p-10 text-muted-foreground md:flex'>
 				<header>we coffee</header>
 
 				<footer>

@@ -13,6 +13,7 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as AuthImport } from './routes/_auth'
 import { Route as AppImport } from './routes/_app'
+import { Route as AuthSignUpImport } from './routes/_auth/sign-up'
 import { Route as AuthSignInImport } from './routes/_auth/sign-in'
 import { Route as AppDashboardImport } from './routes/_app/dashboard'
 
@@ -26,6 +27,11 @@ const AuthRoute = AuthImport.update({
 const AppRoute = AppImport.update({
   id: '/_app',
   getParentRoute: () => rootRoute,
+} as any)
+
+const AuthSignUpRoute = AuthSignUpImport.update({
+  path: '/sign-up',
+  getParentRoute: () => AuthRoute,
 } as any)
 
 const AuthSignInRoute = AuthSignInImport.update({
@@ -58,6 +64,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignInImport
       parentRoute: typeof AuthImport
     }
+    '/_auth/sign-up': {
+      preLoaderRoute: typeof AuthSignUpImport
+      parentRoute: typeof AuthImport
+    }
   }
 }
 
@@ -65,7 +75,7 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   AppRoute.addChildren([AppDashboardRoute]),
-  AuthRoute.addChildren([AuthSignInRoute]),
+  AuthRoute.addChildren([AuthSignInRoute, AuthSignUpRoute]),
 ])
 
 /* prettier-ignore-end */
