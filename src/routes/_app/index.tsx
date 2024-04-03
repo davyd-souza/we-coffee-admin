@@ -3,11 +3,11 @@ import { Helmet } from 'react-helmet-async'
 
 function Dashboard() {
 	return (
-		<div>
-			<Helmet title="Dashboard" />
+		<>
+			<Helmet title="Home" />
 			<h1>Dashboard</h1>
-		</div>
+		</>
 	)
 }
 
-export const Route = createFileRoute('/_app/dashboard')({ component: Dashboard })
+export const Route = createFileRoute('/_app/')({ component: Dashboard })

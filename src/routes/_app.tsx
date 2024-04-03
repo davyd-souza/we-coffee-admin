@@ -1,3 +1,4 @@
+import { Header } from '@/components/header'
 import { Outlet, createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_app')({
@@ -6,10 +7,12 @@ export const Route = createFileRoute('/_app')({
 
 export function AppLayout() {
 	return (
-		<div>
-			<p>App Layout</p>
+		<div className="grid grid-rows-app">
+			<Header />
 
-			<Outlet />
+			<div className="px-6 py-8">
+				<Outlet />
+			</div>
 		</div>
 	)
 }

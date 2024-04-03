@@ -13,9 +13,10 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as AuthImport } from './routes/_auth'
 import { Route as AppImport } from './routes/_app'
+import { Route as AppIndexImport } from './routes/_app/index'
 import { Route as AuthSignUpImport } from './routes/_auth/sign-up'
 import { Route as AuthSignInImport } from './routes/_auth/sign-in'
-import { Route as AppDashboardImport } from './routes/_app/dashboard'
+import { Route as AppOrdersImport } from './routes/_app/orders'
 
 // Create/Update Routes
 
@@ -29,6 +30,11 @@ const AppRoute = AppImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const AppIndexRoute = AppIndexImport.update({
+  path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
+
 const AuthSignUpRoute = AuthSignUpImport.update({
   path: '/sign-up',
   getParentRoute: () => AuthRoute,
@@ -39,8 +45,8 @@ const AuthSignInRoute = AuthSignInImport.update({
   getParentRoute: () => AuthRoute,
 } as any)
 
-const AppDashboardRoute = AppDashboardImport.update({
-  path: '/dashboard',
+const AppOrdersRoute = AppOrdersImport.update({
+  path: '/orders',
   getParentRoute: () => AppRoute,
 } as any)
 
@@ -56,8 +62,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
     }
-    '/_app/dashboard': {
-      preLoaderRoute: typeof AppDashboardImport
+    '/_app/orders': {
+      preLoaderRoute: typeof AppOrdersImport
       parentRoute: typeof AppImport
     }
     '/_auth/sign-in': {
@@ -68,13 +74,17 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignUpImport
       parentRoute: typeof AuthImport
     }
+    '/_app/': {
+      preLoaderRoute: typeof AppIndexImport
+      parentRoute: typeof AppImport
+    }
   }
 }
 
 // Create and export the route tree
 
 export const routeTree = rootRoute.addChildren([
-  AppRoute.addChildren([AppDashboardRoute]),
+  AppRoute.addChildren([AppOrdersRoute, AppIndexRoute]),
   AuthRoute.addChildren([AuthSignInRoute, AuthSignUpRoute]),
 ])
 
