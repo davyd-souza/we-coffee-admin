@@ -16,9 +16,9 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table'
+import { Pagination } from '@/components/pagination'
 
 import { ChevronDown } from 'lucide-react'
-import { Pagination } from '@/components/pagination'
 
 function Orders() {
 	return (
