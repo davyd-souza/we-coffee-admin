@@ -74,6 +74,8 @@ function Orders() {
 					</TableBody>
 				</Table>
 			</main>
+
+			<Pagination pageIndex={0} perPage={10} totalCount={124} />
 		</>
 	)
 }
