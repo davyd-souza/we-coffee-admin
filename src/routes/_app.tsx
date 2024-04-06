@@ -10,7 +10,7 @@ export function AppLayout() {
 		<div className="grid grid-rows-app">
 			<Header />
 
-			<div className="px-6 py-8">
+			<div className="space-y-4 px-6 py-8">
 				<Outlet />
 			</div>
 		</div>
