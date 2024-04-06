@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Helmet } from 'react-helmet-async'
 
-import { OrderTableRow } from '@/components/order-table-row'
+import { OrderTableRow } from '@/components/orders/order-table-row'
 import { Button } from '@/components/ui/button'
 import {
 	DropdownMenu,
