@@ -5,6 +5,7 @@ import { MonthRevenueCard } from '@/components/dashboard/month-revenue-card'
 import { MonthOrdersAmountCard } from '@/components/dashboard/month-orders-amount-card'
 import { DayOrdersAmountCard } from '@/components/dashboard/day-orders-amount-card'
 import { MonthCanceledOrdersAmountCard } from '@/components/dashboard/month-canceled-orders-amount-card'
+import { RevenueChart } from '@/components/dashboard/revenue-chart'
 
 function Dashboard() {
 	return (
@@ -20,6 +21,10 @@ function Dashboard() {
 				<MonthOrdersAmountCard />
 				<DayOrdersAmountCard />
 				<MonthCanceledOrdersAmountCard />
+			</section>
+
+			<section className="grid grid-cols-9 gap-4">
+				<RevenueChart />
 			</section>
 		</>
 	)
