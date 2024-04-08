@@ -1,21 +1,18 @@
 import {
+	CartesianGrid,
+	Line,
+	LineChart,
+	ResponsiveContainer,
+	XAxis,
+	YAxis,
+} from 'recharts'
+import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card'
-
-import {
-	CartesianAxis,
-	CartesianGrid,
-	Line,
-	LineChart,
-	ResponsiveContainer,
-	Tooltip,
-	XAxis,
-	YAxis,
-} from 'recharts'
 
 const DATA = [
 	{ date: '10/12', revenue: 2192 },
@@ -36,7 +33,7 @@ const tailwind = resolveConfig(tailwindConfig)
 export function RevenueChart() {
 	return (
 		<Card className="col-span-6 space-y-8">
-			<CardHeader>
+			<CardHeader className="space-y-1">
 				<CardTitle className="font-bold text-base">
 					Receita no período
 				</CardTitle>

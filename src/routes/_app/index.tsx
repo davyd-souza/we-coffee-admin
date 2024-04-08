@@ -6,6 +6,7 @@ import { MonthOrdersAmountCard } from '@/components/dashboard/month-orders-amoun
 import { DayOrdersAmountCard } from '@/components/dashboard/day-orders-amount-card'
 import { MonthCanceledOrdersAmountCard } from '@/components/dashboard/month-canceled-orders-amount-card'
 import { RevenueChart } from '@/components/dashboard/revenue-chart'
+import { PopularProductsChart } from '@/components/dashboard/popular-products-chart'
 
 function Dashboard() {
 	return (
@@ -25,6 +26,7 @@ function Dashboard() {
 
 			<section className="grid grid-cols-9 gap-4">
 				<RevenueChart />
+				<PopularProductsChart />
 			</section>
 		</>
 	)
