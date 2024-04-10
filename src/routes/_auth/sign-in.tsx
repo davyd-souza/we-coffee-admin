@@ -2,12 +2,15 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { Helmet } from 'react-helmet-async'
-import { ChevronRight } from 'lucide-react'
+import { useMutation } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { toast } from 'sonner'
+
+import { signIn } from '@/api/sign-in'
+import { ChevronRight } from 'lucide-react'
 
 const signInForm = z.object({
 	email: z.string().email(),
@@ -22,10 +25,11 @@ function SignIn() {
 		formState: { isSubmitting },
 	} = useForm<SignInForm>()
 
-	// const handleSignIn = async (data: SignInForm) => {
-	const handleSignIn = async () => {
+	const { mutateAsync: authenticate } = useMutation({ mutationFn: signIn })
+
+	const handleSignIn = async ({ email }: SignInForm) => {
 		try {
-			await new Promise((resolve) => setTimeout(resolve, 2000))
+			await authenticate({ email })
 
 			toast.success(
 				'Foi encaminhado um link de autenticação para seu e-mail.',
