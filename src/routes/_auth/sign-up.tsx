@@ -1,4 +1,5 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { useMutation } from '@tanstack/react-query'
+import { createFileRoute } from '@tanstack/react-router'
 import { Helmet } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -8,8 +9,14 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
+import {
+	type RegisterFranchiseBody,
+	registerFranchise,
+} from '@/api/register-franchise'
+import { signIn } from '@/api/sign-in'
+
 const signUpForm = z.object({
-	locationName: z.string(),
+	restaurantName: z.string(),
 	managerName: z.string(),
 	email: z.string().email(),
 	phone: z.string(),
@@ -18,22 +25,41 @@ const signUpForm = z.object({
 type SignUpForm = z.infer<typeof signUpForm>
 
 function SignUp() {
-	const navigate = useNavigate({ from: '/sign-up' })
-
 	const {
 		register,
 		handleSubmit,
 		formState: { isSubmitting },
 	} = useForm<SignUpForm>()
 
-	const handleSignUp = async () => {
+	const { mutateAsync: createFranchise } = useMutation({
+		mutationFn: registerFranchise,
+	})
+
+	const { mutateAsync: authenticate } = useMutation({ mutationFn: signIn })
+
+	const handleSignIn = async (email: string) => {
 		try {
-			await new Promise((resolve) => setTimeout(resolve, 2000))
+			await authenticate({ email })
+
+			toast.success('Foi encaminhado um link de autenticação para seu e-mail.')
+		} catch {
+			toast.error('E-mail não encontrado.')
+		}
+	}
+
+	const handleSignUp = async ({
+		email,
+		managerName,
+		phone,
+		restaurantName,
+	}: RegisterFranchiseBody) => {
+		try {
+			await createFranchise({ email, managerName, phone, restaurantName })
 
 			toast.success('Franquia cadastrada com sucesso!', {
 				action: {
 					label: 'Login',
-					onClick: () => navigate({ to: '/sign-in' }),
+					onClick: () => handleSignIn(email),
 				},
 			})
 		} catch {
@@ -57,11 +83,11 @@ function SignUp() {
 
 				<form className="space-y-4" onSubmit={handleSubmit(handleSignUp)}>
 					<div className="space-y-2">
-						<Label htmlFor="locationName">Local do estabelecimento</Label>
+						<Label htmlFor="restaurantName">Local do estabelecimento</Label>
 						<Input
-							id="locationName"
+							id="restaurantName"
 							type="text"
-							{...register('locationName')}
+							{...register('restaurantName')}
 						/>
 					</div>
 
