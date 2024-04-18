@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { Link } from '@tanstack/react-router'
 
 import {
 	DropdownMenu,
@@ -16,15 +17,16 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Building, ChevronDown, LogOut, Palette } from 'lucide-react'
-
+import { ChevronDown, Settings, LogOut, Palette } from 'lucide-react'
 import { type Theme, useTheme } from './theme/theme-provider'
 
 import { getProfile } from '@/api/get-profile'
-import { getManagedFranchise } from '@/api/get-managed-franchise'
+import { useManagedFranchise } from '@/hooks/useManagedFranchise'
 
 export function AccountMenu() {
 	const { theme, setTheme } = useTheme()
+	const { data: managedFranchise, isLoading: isLoadingManagedFranchise } =
+		useManagedFranchise()
 
 	const handleThemeChange = (theme: Theme) => {
 		setTheme(theme)
@@ -34,12 +36,6 @@ export function AccountMenu() {
 		queryKey: ['me'],
 		queryFn: getProfile,
 	})
-
-	const { data: managedFranchise, isLoading: isLoadingManagedFranchise } =
-		useQuery({
-			queryKey: ['managed-franchise'],
-			queryFn: getManagedFranchise,
-		})
 
 	return (
 		<DropdownMenu>
@@ -76,9 +72,11 @@ export function AccountMenu() {
 
 				<DropdownMenuSeparator />
 
-				<DropdownMenuItem className="flex gap-2">
-					<Building className="size-4" />
-					Perfil da loja
+				<DropdownMenuItem className="flex gap-2" asChild>
+					<Link to="/settings/franchise">
+						<Settings className="size-4" />
+						Configurações
+					</Link>
 				</DropdownMenuItem>
 
 				<DropdownMenuSub>

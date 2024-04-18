@@ -17,6 +17,8 @@ import { Route as AppIndexImport } from './routes/_app/index'
 import { Route as AuthSignUpImport } from './routes/_auth/sign-up'
 import { Route as AuthSignInImport } from './routes/_auth/sign-in'
 import { Route as AppOrdersImport } from './routes/_app/orders'
+import { Route as AppSettingsRouteImport } from './routes/_app/settings/route'
+import { Route as AppSettingsFranchiseImport } from './routes/_app/settings/franchise'
 
 // Create/Update Routes
 
@@ -50,6 +52,16 @@ const AppOrdersRoute = AppOrdersImport.update({
   getParentRoute: () => AppRoute,
 } as any)
 
+const AppSettingsRouteRoute = AppSettingsRouteImport.update({
+  path: '/settings',
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AppSettingsFranchiseRoute = AppSettingsFranchiseImport.update({
+  path: '/franchise',
+  getParentRoute: () => AppSettingsRouteRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -61,6 +73,10 @@ declare module '@tanstack/react-router' {
     '/_auth': {
       preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
+    }
+    '/_app/settings': {
+      preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppImport
     }
     '/_app/orders': {
       preLoaderRoute: typeof AppOrdersImport
@@ -78,13 +94,21 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexImport
       parentRoute: typeof AppImport
     }
+    '/_app/settings/franchise': {
+      preLoaderRoute: typeof AppSettingsFranchiseImport
+      parentRoute: typeof AppSettingsRouteImport
+    }
   }
 }
 
 // Create and export the route tree
 
 export const routeTree = rootRoute.addChildren([
-  AppRoute.addChildren([AppOrdersRoute, AppIndexRoute]),
+  AppRoute.addChildren([
+    AppSettingsRouteRoute.addChildren([AppSettingsFranchiseRoute]),
+    AppOrdersRoute,
+    AppIndexRoute,
+  ]),
   AuthRoute.addChildren([AuthSignInRoute, AuthSignUpRoute]),
 ])
 
