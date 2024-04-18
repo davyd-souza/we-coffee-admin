@@ -17,7 +17,7 @@ import type { GetManagedFranchiseResponse } from '@/api/get-managed-franchise'
 
 const franchiseProfileSchema = z.object({
 	name: z.string().min(1),
-	description: z.string(),
+	description: z.string().nullable(),
 })
 
 type FranchiseProfileData = z.infer<typeof franchiseProfileSchema>
@@ -41,20 +41,33 @@ function Profile() {
 
 	const { mutateAsync: updateFranchiseFn } = useMutation({
 		mutationFn: updateFranchise,
-		onSuccess(_, variables) {
-			const cached = queryClient.getQueryData<GetManagedFranchiseResponse>([
-				'managed-franchise',
-			])
+		onMutate(data) {
+			const { cached } = updateCachedFranchiseData(data)
 
-			if (cached) {
-				queryClient.setQueryData(['managed-franchise'], {
-					...cached,
-					description: variables.description,
-					name: variables.name,
-				})
+			return { previousData: cached }
+		},
+		onError(_, __, context) {
+			if (context?.previousData) {
+				updateCachedFranchiseData(context.previousData)
 			}
 		},
 	})
+
+	function updateCachedFranchiseData(data: FranchiseProfileData) {
+		const cached = queryClient.getQueryData<GetManagedFranchiseResponse>([
+			'managed-franchise',
+		])
+
+		if (cached) {
+			queryClient.setQueryData(['managed-franchise'], {
+				...cached,
+				description: data.description,
+				name: data.name,
+			})
+		}
+
+		return { cached }
+	}
 
 	async function handleUpdateFranchise(data: FranchiseProfileData) {
 		try {
