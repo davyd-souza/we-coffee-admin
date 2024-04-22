@@ -1,5 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Helmet } from 'react-helmet-async'
+import { getOrdersOptions } from '@/hooks/useOrders'
+import { useSuspenseQuery } from '@tanstack/react-query'
+import { z } from 'zod'
 
 import { OrderTableRow } from '@/components/orders/order-table-row'
 import { Button } from '@/components/ui/button'
@@ -20,7 +23,31 @@ import { Pagination } from '@/components/pagination'
 
 import { ChevronDown } from 'lucide-react'
 
+const ordersSearchSchema = z.object({
+	page: z.number().catch(1),
+})
+
+export const Route = createFileRoute('/_app/orders')({
+	component: Orders,
+	validateSearch: ordersSearchSchema,
+	loaderDeps: (opts) => ({ pageIndex: opts.search.page - 1 }),
+	loader: (opts) =>
+		opts.context.queryClient.ensureQueryData(
+			getOrdersOptions({ pageIndex: opts.deps.pageIndex }),
+		),
+	pendingComponent: () => <p>Loading...</p>,
+})
+
 function Orders() {
+	const { page } = Route.useSearch()
+
+	const ordersQuery = useSuspenseQuery(
+		getOrdersOptions({ pageIndex: page - 1 }),
+	)
+	const { meta, orders } = ordersQuery.data
+
+	// const { data: ordersResult } = useOrders({ pageIndex: page - 1 })
+
 	return (
 		<>
 			<Helmet title="Pedidos" />
@@ -70,14 +97,19 @@ function Orders() {
 						</TableRow>
 					</TableHeader>
 					<TableBody>
-						<OrderTableRow />
+						{/* {ordersResult?.orders.map((order) => ( */}
+						{orders.map((order) => (
+							<OrderTableRow key={order.orderId} order={order} />
+						))}
 					</TableBody>
 				</Table>
 			</main>
 
-			<Pagination pageIndex={0} perPage={10} totalCount={124} />
+			<Pagination
+				pageIndex={meta.pageIndex}
+				perPage={meta.perPage}
+				totalCount={meta.totalCount}
+			/>
 		</>
 	)
 }
-
-export const Route = createFileRoute('/_app/orders')({ component: Orders })

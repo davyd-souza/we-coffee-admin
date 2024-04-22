@@ -4,8 +4,20 @@ import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import { OrderDetails } from './order-details'
 
 import { Check, Search, X } from 'lucide-react'
+import { OrderStatus } from './order-status'
+import dayjs from 'dayjs'
 
-export function OrderTableRow() {
+type OrderTableRowProps = {
+	order: {
+		orderId: string
+		createdAt: string
+		status: 'pending' | 'canceled' | 'processing' | 'delivering' | 'delivered'
+		customerName: string
+		total: number
+	}
+}
+
+export function OrderTableRow({ order }: OrderTableRowProps) {
 	return (
 		<TableRow>
 			<TableCell>
@@ -20,16 +32,23 @@ export function OrderTableRow() {
 					<OrderDetails />
 				</Dialog>
 			</TableCell>
-			<TableCell className="font-mono text-xs">125012sadj012jajsd</TableCell>
-			<TableCell className="text-muted-foreground">5 minutos</TableCell>
-			<TableCell>
-				<div className="flex items-center gap-2">
-					<span className="size-2 rounded-full bg-muted-foreground" />
-					<span className="text-muted-foreground">Pendente</span>
-				</div>
+			<TableCell className="font-mono text-xs">{order.orderId}</TableCell>
+			<TableCell
+				className="text-muted-foreground"
+				title={dayjs(order.createdAt).format('DD/MM/YYYY HH:MM:ss')}
+			>
+				{dayjs(order.createdAt).fromNow()}
 			</TableCell>
-			<TableCell className="font-medium">Davyd Souza</TableCell>
-			<TableCell className="font-medium">R$ 31,99</TableCell>
+			<TableCell>
+				<OrderStatus status={order.status} />
+			</TableCell>
+			<TableCell className="font-medium">{order.customerName}</TableCell>
+			<TableCell className="font-medium">
+				{order.total.toLocaleString('pt-br', {
+					style: 'currency',
+					currency: 'BRL',
+				})}
+			</TableCell>
 			<TableCell>
 				<Button size="xs" className="flex items-center gap-2">
 					<Check className="size-3" />

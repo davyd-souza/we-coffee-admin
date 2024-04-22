@@ -1,4 +1,6 @@
-import { Button } from '@/components/ui/button'
+import { Link } from '@tanstack/react-router'
+import type { ComponentProps, ReactNode } from 'react'
+
 import {
 	ChevronLeft,
 	ChevronRight,
@@ -31,24 +33,65 @@ export function Pagination({
 				</p>
 
 				<nav aria-label="pagination" className="space-x-2">
-					<Button variant="outline" className="size-8 p-0">
+					<PaginationItem
+						search={{
+							page: 1,
+						}}
+						disabled={pageIndex === 0}
+					>
 						<ChevronsLeft className="size-4" />
-						<span className="sr-only">Primeira página</span>
-					</Button>
-					<Button variant="outline" className="size-8 p-0">
+						<PaginationLabel>Primeira página</PaginationLabel>
+					</PaginationItem>
+
+					<PaginationItem
+						search={{
+							page: pageIndex,
+						}}
+						disabled={pageIndex === 0}
+					>
 						<ChevronLeft className="size-4" />
-						<span className="sr-only">Página anterior</span>
-					</Button>
-					<Button variant="outline" className="size-8 p-0">
+						<PaginationLabel>Página anterior</PaginationLabel>
+					</PaginationItem>
+
+					<PaginationItem
+						search={{
+							page: pageIndex + 2,
+						}}
+						disabled={pageIndex === pages - 1}
+					>
 						<ChevronRight className="size-4" />
-						<span className="sr-only">Próxima anterior</span>
-					</Button>
-					<Button variant="outline" className="size-8 p-0">
+						<PaginationLabel>Próxima página</PaginationLabel>
+					</PaginationItem>
+
+					<PaginationItem
+						search={{
+							page: pages,
+						}}
+						disabled={pageIndex === pages - 1}
+					>
 						<ChevronsRight className="size-4" />
-						<span className="sr-only">Ultima página</span>
-					</Button>
+						<PaginationLabel>Última Página</PaginationLabel>
+					</PaginationItem>
 				</nav>
 			</div>
 		</section>
 	)
+}
+
+type PaginationItemProps = ComponentProps<typeof Link>
+
+function PaginationItem({ to, children, ...props }: PaginationItemProps) {
+	return (
+		<Link
+			className="inline-flex size-8 items-center justify-center whitespace-nowrap rounded-md border border-input bg-background p-0 font-medium text-sm ring-offset-background transition-colors aria-[disabled]:pointer-events-none hover:bg-accent hover:text-accent-foreground aria-[disabled]:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+			to={to}
+			{...props}
+		>
+			{children}
+		</Link>
+	)
+}
+
+function PaginationLabel({ children }: { children: ReactNode }) {
+	return <span className="sr-only">{children}</span>
 }
