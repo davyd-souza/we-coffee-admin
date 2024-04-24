@@ -10,7 +10,7 @@ type OrderStatusProps = {
 }
 
 const orderStatusMap: Record<OrderStatus, string> = {
-	canceled: 'Cancelador',
+	canceled: 'Cancelado',
 	delivered: 'Entregue',
 	delivering: 'Em Rota',
 	pending: 'Pendente',
