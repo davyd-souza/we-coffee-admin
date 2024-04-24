@@ -1,11 +1,15 @@
+import { useState } from 'react'
+
 import { TableCell, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import { OrderDetails } from './order-details'
+import { OrderStatus } from './order-status'
 
 import { Check, Search, X } from 'lucide-react'
-import { OrderStatus } from './order-status'
+
 import dayjs from 'dayjs'
+import { formatToBRL } from '@/utils/formatToBRL'
 
 type OrderTableRowProps = {
 	order: {
@@ -18,10 +22,12 @@ type OrderTableRowProps = {
 }
 
 export function OrderTableRow({ order }: OrderTableRowProps) {
+	const [open, setOpen] = useState(false)
+
 	return (
 		<TableRow>
 			<TableCell>
-				<Dialog>
+				<Dialog open={open} onOpenChange={setOpen}>
 					<DialogTrigger asChild>
 						<Button variant="outline" size="xs">
 							<Search className="size-3" />
@@ -29,7 +35,7 @@ export function OrderTableRow({ order }: OrderTableRowProps) {
 						</Button>
 					</DialogTrigger>
 
-					<OrderDetails />
+					<OrderDetails open={open} orderId={order.orderId} />
 				</Dialog>
 			</TableCell>
 			<TableCell className="font-mono text-xs">{order.orderId}</TableCell>
@@ -44,10 +50,7 @@ export function OrderTableRow({ order }: OrderTableRowProps) {
 			</TableCell>
 			<TableCell className="font-medium">{order.customerName}</TableCell>
 			<TableCell className="font-medium">
-				{order.total.toLocaleString('pt-br', {
-					style: 'currency',
-					currency: 'BRL',
-				})}
+				{formatToBRL(order.total / 100)}
 			</TableCell>
 			<TableCell>
 				<Button size="xs" className="flex items-center gap-2">
