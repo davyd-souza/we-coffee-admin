@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { TableCell, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
@@ -8,8 +9,12 @@ import { OrderStatus } from './order-status'
 
 import { Check, Search, X } from 'lucide-react'
 
-import dayjs from 'dayjs'
+import { cancelOrder } from '@/api/cancel-order'
 import { formatToBRL } from '@/utils/formatToBRL'
+import dayjs from 'dayjs'
+
+import type { GetOrdersResponse } from '@/api/get-orders'
+import { toast } from 'sonner'
 
 type OrderTableRowProps = {
 	order: {
@@ -23,6 +28,36 @@ type OrderTableRowProps = {
 
 export function OrderTableRow({ order }: OrderTableRowProps) {
 	const [open, setOpen] = useState(false)
+
+	const queryClient = useQueryClient()
+
+	const { mutateAsync: cancelOrderFn } = useMutation({
+		mutationFn: cancelOrder,
+		onSuccess(_, { orderId }) {
+			const ordersListCache = queryClient.getQueriesData<GetOrdersResponse>({
+				queryKey: ['orders'],
+			})
+
+			for (const [cacheKey, cacheData] of ordersListCache) {
+				if (!cacheData) {
+					return
+				}
+
+				queryClient.setQueryData<GetOrdersResponse>(cacheKey, {
+					...cacheData,
+					orders: cacheData.orders.map((order) => {
+						if (order.orderId === orderId) {
+							return { ...order, status: 'canceled' }
+						}
+
+						return order
+					}),
+				})
+			}
+
+			toast.success(`O pedido ${orderId} foi cancelado com sucesso!`)
+		},
+	})
 
 	return (
 		<TableRow>
@@ -58,8 +93,15 @@ export function OrderTableRow({ order }: OrderTableRowProps) {
 					Aprovar
 				</Button>
 			</TableCell>
+
 			<TableCell>
-				<Button variant="outline" size="xs" className="flex items-center gap-2">
+				<Button
+					disabled={!['pending', 'processing'].includes(order.status)}
+					variant="outline"
+					size="xs"
+					className="flex items-center gap-2"
+					onClick={() => cancelOrderFn({ orderId: order.orderId })}
+				>
 					<X className="size-3" />
 					Cancelar
 				</Button>
