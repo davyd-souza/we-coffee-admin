@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
 
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { Skeleton } from '@/components/ui/skeleton'
 import { CardStatus } from '../card-status'
+import { MetricsCardSkeleton } from './metrics-card-skeleton'
 
 import { DollarSign } from 'lucide-react'
 
@@ -51,12 +51,7 @@ export function MonthRevenueCard() {
 					</>
 				)}
 
-				{isPending && (
-					<div className="space-y-1">
-						<Skeleton className="h-8 w-12" />
-						<Skeleton className="h-4 w-32" />
-					</div>
-				)}
+				{isPending && <MetricsCardSkeleton />}
 			</CardContent>
 		</Card>
 	)

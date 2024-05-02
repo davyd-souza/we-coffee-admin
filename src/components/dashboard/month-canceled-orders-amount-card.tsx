@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Skeleton } from '@/components/ui/skeleton'
+import { MetricsCardSkeleton } from './metrics-card-skeleton'
+import { CardStatus } from '../card-status'
 
 import { TicketX } from 'lucide-react'
 
 import { getMonthCanceledOrdersAmount } from '@/api/get-month-canceled-orders-amount'
-import { CardStatus } from '../card-status'
 
 export function MonthCanceledOrdersAmountCard() {
 	const { data: monthCanceledOrdersAmount, isPending } = useQuery({
@@ -50,12 +50,7 @@ export function MonthCanceledOrdersAmountCard() {
 					</>
 				)}
 
-				{isPending && (
-					<div className="space-y-1">
-						<Skeleton className="h-8 w-12" />
-						<Skeleton className="h-4 w-32" />
-					</div>
-				)}
+				{isPending && <MetricsCardSkeleton />}
 			</CardContent>
 		</Card>
 	)
