@@ -20,49 +20,55 @@ import {
 } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { DatePickerWithRange } from '@/components/ui/date-picker-with-range'
+import { Skeleton } from '@/components/ui/skeleton'
 
 import { getDailyRevenueInPeriod } from '@/api/get-daily-revenue-in-period'
 import tailwindConfig from '@/../tailwind.config.ts'
 
-import type { DateRange } from "react-day-picker"
+import type { DateRange } from 'react-day-picker'
 
 const tailwind = resolveConfig(tailwindConfig)
 
 export function RevenueChart() {
-  const [dateRange, setDateRange] = useState<DateRange | undefined>({
-    from: dayjs().subtract(7, 'days').toDate(),
-    to: new Date()
-  })
-
-	const { data: dailyRevenueInPeriod } = useQuery({
-		queryKey: ['metrics', 'daily-revenue-in-period', dateRange],
-		queryFn: () => getDailyRevenueInPeriod({
-      from: dateRange?.from,
-      to: dateRange?.to
-    }),
+	const [dateRange, setDateRange] = useState<DateRange | undefined>({
+		from: dayjs().subtract(7, 'days').toDate(),
+		to: new Date(),
 	})
 
-  const chartData = useMemo(() => {
-    return dailyRevenueInPeriod?.map(item => ({
-      date: item.date,
-      receipt: +item.receipt / 100
-    }))
-  }, [dailyRevenueInPeriod])
+	const { data: dailyRevenueInPeriod, isPending } = useQuery({
+		queryKey: ['metrics', 'daily-revenue-in-period', dateRange],
+		queryFn: () =>
+			getDailyRevenueInPeriod({
+				from: dateRange?.from,
+				to: dateRange?.to,
+			}),
+	})
+
+	const chartData = useMemo(() => {
+		return dailyRevenueInPeriod?.map((item) => ({
+			date: item.date,
+			receipt: +item.receipt / 100,
+		}))
+	}, [dailyRevenueInPeriod])
 
 	return (
 		<Card className="col-span-6 space-y-8">
 			<CardHeader className="flex-row items-center justify-between space-y-1">
-        <div>
-          <CardTitle className="font-bold text-base">
-            Receita no período
-          </CardTitle>
-          <CardDescription>Receita diária no período</CardDescription>
-        </div>
+				<div>
+					<CardTitle className="font-bold text-base">
+						Receita no período
+					</CardTitle>
+					<CardDescription>Receita diária no período</CardDescription>
+				</div>
 
-        <div className='flex items-center gap-2'>
-          <Label>Período</Label>
-          <DatePickerWithRange date={dateRange} onDateChange={setDateRange} maxDays={7} />
-        </div>
+				<div className="flex items-center gap-2">
+					<Label>Período</Label>
+					<DatePickerWithRange
+						date={dateRange}
+						onDateChange={setDateRange}
+						maxDays={7}
+					/>
+				</div>
 			</CardHeader>
 
 			<CardContent>
@@ -101,6 +107,8 @@ export function RevenueChart() {
 						</LineChart>
 					</ResponsiveContainer>
 				)}
+
+				{isPending && <Skeleton className="h-[240px] w-full" />}
 			</CardContent>
 		</Card>
 	)

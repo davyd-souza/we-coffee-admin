@@ -1,3 +1,5 @@
+import { useQuery } from '@tanstack/react-query'
+
 import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts'
 import {
 	Card,
@@ -6,7 +8,8 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card'
-import { useQuery } from '@tanstack/react-query'
+import { Skeleton } from '@/components/ui/skeleton'
+
 import { getPopularProducts } from '@/api/get-popoular-products'
 
 const COLORS = [
@@ -33,7 +36,7 @@ const COLORS = [
 ]
 
 export function PopularProductsChart() {
-	const { data: popularProducts } = useQuery({
+	const { data: popularProducts, isPending } = useQuery({
 		queryKey: ['metrics', 'popular-products'],
 		queryFn: getPopularProducts,
 	})
@@ -108,6 +111,8 @@ export function PopularProductsChart() {
 						</PieChart>
 					</ResponsiveContainer>
 				)}
+
+				{isPending && <Skeleton className="m-auto h-[240px] w-[240px]" />}
 			</CardContent>
 		</Card>
 	)
