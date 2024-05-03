@@ -20,6 +20,7 @@ import {
 	TableRow,
 } from '@/components/ui/table'
 import { Pagination } from '@/components/pagination'
+import { OrdersSkeleton } from '@/components/orders/orders-skeleton'
 
 import { ChevronDown } from 'lucide-react'
 
@@ -31,11 +32,11 @@ export const Route = createFileRoute('/_app/orders')({
 	component: Orders,
 	validateSearch: ordersSearchSchema,
 	loaderDeps: (opts) => ({ pageIndex: opts.search.page - 1 }),
-	loader: (opts) =>
+	loader: async (opts) =>
 		opts.context.queryClient.ensureQueryData(
 			getOrdersOptions({ pageIndex: opts.deps.pageIndex }),
 		),
-	pendingComponent: () => <p>Loading...</p>,
+	pendingComponent: () => <OrdersSkeleton />,
 })
 
 function Orders() {
@@ -45,8 +46,6 @@ function Orders() {
 		getOrdersOptions({ pageIndex: page - 1 }),
 	)
 	const { meta, orders } = ordersQuery.data
-
-	// const { data: ordersResult } = useOrders({ pageIndex: page - 1 })
 
 	return (
 		<>
@@ -96,8 +95,8 @@ function Orders() {
 							<TableHead className="w-[5%]" />
 						</TableRow>
 					</TableHeader>
+
 					<TableBody>
-						{/* {ordersResult?.orders.map((order) => ( */}
 						{orders.map((order) => (
 							<OrderTableRow key={order.orderId} order={order} />
 						))}
