@@ -8,7 +8,8 @@
 		"build": "tsc && vite build",
 		"lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
 		"preview": "vite preview",
-		"ui:add": "pnpx shadcn-ui@latest add"
+		"ui:add": "pnpx shadcn-ui@latest add",
+		"test": "vitest"
 	},
 	"dependencies": {
 		"@biomejs/biome": "1.6.3",
@@ -44,11 +45,15 @@
 		"zod": "3.22.4"
 	},
 	"devDependencies": {
+		"@testing-library/jest-dom": "6.4.2",
+		"@testing-library/react": "15.0.6",
 		"@types/node": "20.11.20",
 		"@types/react": "18.2.56",
 		"@types/react-dom": "18.2.19",
 		"@vitejs/plugin-react": "4.2.1",
+		"happy-dom": "14.7.1",
 		"typescript": "5.2.2",
-		"vite": "5.1.4"
+		"vite": "5.1.4",
+		"vitest": "1.5.3"
 	}
 }
