@@ -8,7 +8,7 @@ import { queryClient } from './lib/react-query'
 
 import './styles/globals.css'
 
-const router = createRouter({
+export const router = createRouter({
 	routeTree,
 	context: {
 		queryClient,

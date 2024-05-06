@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router'
+import { Link, useSearch } from '@tanstack/react-router'
 import type { ComponentProps, ReactNode } from 'react'
 
 import {
@@ -15,11 +15,21 @@ type PaginationProps = {
 }
 
 export function Pagination({
-	pageIndex,
+	pageIndex: _,
 	totalCount,
 	perPage,
 }: PaginationProps) {
 	const pages = Math.ceil(totalCount / perPage) || 1
+	const { page } = useSearch({
+		strict: false,
+		select: (search) => {
+			if ('page' in search) {
+				return { page: search.page }
+			}
+
+			return { page: 1 }
+		},
+	})
 
 	return (
 		<section className="flex items-center justify-between">
@@ -29,7 +39,7 @@ export function Pagination({
 
 			<div className="flex items-center gap-2 lg:gap-4">
 				<p className="font-medium text-sm">
-					Página {pageIndex + 1} de {pages}
+					Página {page} de {pages}
 				</p>
 
 				<nav aria-label="pagination" className="space-x-2">
@@ -37,7 +47,7 @@ export function Pagination({
 						search={{
 							page: 1,
 						}}
-						disabled={pageIndex === 0}
+						disabled={page === 1}
 					>
 						<ChevronsLeft className="size-4" />
 						<PaginationLabel>Primeira página</PaginationLabel>
@@ -45,9 +55,9 @@ export function Pagination({
 
 					<PaginationItem
 						search={{
-							page: pageIndex,
+							page: page - 1,
 						}}
-						disabled={pageIndex === 0}
+						disabled={page === 0}
 					>
 						<ChevronLeft className="size-4" />
 						<PaginationLabel>Página anterior</PaginationLabel>
@@ -55,9 +65,9 @@ export function Pagination({
 
 					<PaginationItem
 						search={{
-							page: pageIndex + 2,
+							page: page + 1,
 						}}
-						disabled={pageIndex === pages - 1}
+						disabled={page === pages}
 					>
 						<ChevronRight className="size-4" />
 						<PaginationLabel>Próxima página</PaginationLabel>
@@ -67,10 +77,10 @@ export function Pagination({
 						search={{
 							page: pages,
 						}}
-						disabled={pageIndex === pages - 1}
+						disabled={page === pages}
 					>
 						<ChevronsRight className="size-4" />
-						<PaginationLabel>Última Página</PaginationLabel>
+						<PaginationLabel>Última página</PaginationLabel>
 					</PaginationItem>
 				</nav>
 			</div>
