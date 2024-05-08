@@ -5,7 +5,7 @@ import { RouterProvider, createRouter } from '@tanstack/react-router'
 
 import { routeTree } from './routeTree.gen'
 import { queryClient } from './lib/react-query'
-
+import { enableMSW } from '@/api/mocks/index'
 import './styles/globals.css'
 
 export const router = createRouter({
@@ -28,11 +28,13 @@ const rootElement = document.getElementById('app')!
 if (!rootElement.innerHTML) {
 	const root = ReactDOM.createRoot(rootElement)
 
-	root.render(
-		<StrictMode>
-			<QueryClientProvider client={queryClient}>
-				<RouterProvider router={router} />
-			</QueryClientProvider>
-		</StrictMode>,
+	enableMSW().then(() =>
+		root.render(
+			<StrictMode>
+				<QueryClientProvider client={queryClient}>
+					<RouterProvider router={router} />
+				</QueryClientProvider>
+			</StrictMode>,
+		),
 	)
 }
