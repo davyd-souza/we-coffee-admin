@@ -1,6 +1,6 @@
 import { api } from '@/lib/axios'
 
-type UpdateFranchiseBody = {
+export type UpdateFranchiseBody = {
 	name: string
 	description: string | null
 }
